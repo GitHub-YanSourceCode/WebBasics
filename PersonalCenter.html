@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+    <meta name="MobileOptimized" content="320">
+    <script src="/Scripts/boot.js?version=<%=AppVersion%>" type="text/javascript"></script>
+
+</head>
+
+<body>
+    <!-- BEGIN CONTENT -->
+    <div class="row-wrap">
+        <div class="row  row-hd row-hd-responsive" style="height: 100%">
+            <div class="col-md-9 col-hd-9">
+                <div class="portlet box blue">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-calendar"></i>待办事项
+                        </div>
+                        <div class="tools">
+                            <a href="" class="collapse"></a>
+                            <a href="#portlet-config" data-toggle="modal" class="config"></a>
+                            <a href="" class="reload"></a>
+                            <a href="" class="remove"></a>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <iframe style='width:100%;height:100%;' frameborder='0' src='/Form/OpenURL?url=/PowerPlat/FormXml/zh-CN/Systems/WidgetMyWorkflowInfo.htm'></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-hd-9">
+                <div class="portlet box blue">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-calendar"></i>快捷菜单
+                        </div>
+                        <div class="tools">
+                            <a href="" class="collapse"></a>
+                            <a href="#portlet-config" data-toggle="modal" class="config"></a>
+                            <a href="" class="reload"></a>
+                            <a href="" class="remove"></a>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body" id="personMenu">
+                        <p>您当前没有设置任何菜单,请到点击"个人设置",选择"设计菜单",设计您的快捷菜单</p>
+                        <div class="tiles">
+                            <a href="javascript:;" onclick="openmenu('712fbe13-fc06-dccc-7f99-0ff253f0b80f', '个人设置')">
+
+
+                                <div class="tile double marginb bg-blue">
+                                    <div class="tile-body">
+                                        <i class="fa fa-tags "></i>
+
+                                    </div>
+                                    <div class="tile-object">
+                                        <div class="name">
+                                            个人设置
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <script type="text/javascript">
+        $(function () {
+            $.ajax({
+                url: "/Account/GetMenuObject",
+                data: {},
+                cache: false,
+                success: function (text) {
+                    var tmpdata = mini.decode(text);
+                    if (tmpdata) {
+                        var html = "";
+                        for (var i = 0; i < tmpdata.length; i++) {
+                            var obj = new Object();
+                            var json = mini.decode(tmpdata[i].IconClass);
+                            obj.Id = tmpdata[i].WidgetMenuId;
+                            obj.ObjectName = tmpdata[i].ObjectName;
+                            if (json != null) {
+                                obj.Color = json.color;
+                                obj.Icon = json.icon;
+                            }
+                            else {
+                                obj.Color = "";
+                                obj.Icon = "";
+                            }
+                            html += ' <a href="javascript:;" onclick="openmenu(\'' + obj.Id + '\', \'' + obj.ObjectName + '\')"><div class="' + obj.Color + ' marginr">' +
+                                    '   <div class="tile-body">' +
+                                    '     <i class="' + obj.Icon + '"></i>' +
+                                    '   </div>' +
+                                    '   <div class="tile-object">' +
+                                    '       <div class="name">' +
+                                    '           ' + obj.ObjectName +
+                                    '       </div>' +
+                                    '   </div>' +
+                                    ' </div></a>';
+                        }
+                        if (tmpdata.length > 0)
+                            $("#personMenu").html(html);
+
+                    }
+                }
+            });
+        });
+        function openmenu(id, text) {
+            var url = '/WebCenter/MainMenu/' + id;
+            if (id == "712fbe13-fc06-dccc-7f99-0ff253f0b80f")
+                url = "/Form/ViewForm/23f9c17b-eef3-4f89-a162-182213a22ba9/";
+            top.Power.menu.nav.addTabs(url, id, text, "single");
+        }
+    </script>
+</body>
+</html>
